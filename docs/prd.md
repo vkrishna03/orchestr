@@ -210,6 +210,69 @@ EXPECT_CALLS: auth-service:/verify, payment-service:/charge, stripe:/v1/charges
 
 ---
 
+## UI Testing (Planned)
+
+High-level, intent-based UI testing for frontend applications.
+
+### Syntax
+
+```
+TYPE: UI
+BASE: http://localhost:5173
+
+FLOW: Login
+DATA: {email: "test@example.com", password: "test123"}
+EXPECT: /dashboard
+EXPECT_TEXT: "Welcome"
+
+---
+
+FLOW: Signup
+DATA: {name: "John", email: "john@test.com", password: "pass123"}
+EXPECT: /welcome
+
+---
+
+FLOW: Search
+DATA: {query: "widgets"}
+EXPECT_COUNT: .product-card >= 1
+```
+
+### UI Keywords
+
+| Keyword | Description | Example |
+|---------|-------------|---------|
+| `TYPE` | Test type (UI or API) | `TYPE: UI` |
+| `BASE` | Base URL for the app | `BASE: http://localhost:5173` |
+| `FLOW` | User flow name | `FLOW: Login` |
+| `PAGE` | Starting page | `PAGE: /login` |
+| `DATA` | Form input data | `DATA: {email: "test@test.com"}` |
+| `EXPECT` | Expected URL after action | `EXPECT: /dashboard` |
+| `EXPECT_TEXT` | Expected text on page | `EXPECT_TEXT: "Welcome"` |
+| `EXPECT_ELEMENT` | Expected element exists | `EXPECT_ELEMENT: .success` |
+| `EXPECT_COUNT` | Element count assertion | `EXPECT_COUNT: .item >= 1` |
+
+### How It Works
+
+1. **Auto-navigate** - Recognizes common flows (Login → /login, Signup → /register)
+2. **Auto-detect forms** - Finds forms on the page
+3. **Smart field matching** - Matches DATA fields to inputs by name, id, label, or placeholder
+4. **Auto-submit** - Finds and clicks submit buttons
+5. **Verify outcome** - Checks URL, text, and element assertions
+
+### Common Flows
+
+The tool recognizes these flow names and auto-navigates:
+
+- `Login` → `/login`, `/signin`
+- `Signup` → `/signup`, `/register`
+- `Search` → Current page (looks for search input)
+- `Checkout` → `/cart`, `/checkout`
+
+See [UI Testing Spec](ui-testing.md) for full details.
+
+---
+
 ## Technical Architecture
 
 ### Why Go

@@ -96,6 +96,28 @@ EXPECT: 200 with {email: "test@example.com"}
 - `{{token}}` - Common example: auth token
 - `{{userId}}` - Common example: saved user ID
 
+## UI Testing (Planned)
+
+High-level, intent-based UI testing for frontends:
+
+```
+TYPE: UI
+BASE: http://localhost:5173
+
+FLOW: Login
+DATA: {email: "test@example.com", password: "test123"}
+EXPECT: /dashboard
+EXPECT_TEXT: "Welcome"
+
+---
+
+FLOW: Signup
+DATA: {name: "John", email: "john@test.com", password: "pass123"}
+EXPECT: /welcome
+```
+
+The tool auto-detects forms, matches fields, and verifies outcomes. See [UI Testing Spec](docs/ui-testing.md).
+
 ## Commands
 
 ```bash
@@ -152,3 +174,4 @@ Go 1.21+ | Cobra | Viper
 - [Technical Approach](docs/tech-approach.md)
 - [Developer Guide](docs/dev-guide.md)
 - [Roadmap](docs/roadmap.md)
+- [UI Testing Spec](docs/ui-testing.md)

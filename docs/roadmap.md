@@ -33,20 +33,22 @@
 ### Week 2: Service Detection + Runner
 
 **Deliverables:**
-- [ ] `ServiceDetector` interface
-- [ ] Spring Boot detector (pom.xml, build.gradle, application.yml port extraction)
-- [ ] React/Vite detector (vite.config.ts/js, port extraction)
+- [x] `ServiceDetector` interface
+- [x] Spring Boot detector (pom.xml, build.gradle, application.yml port extraction)
+- [x] React/Vite detector (vite.config.ts/js, port extraction)
+- [x] Environment placeholder parsing (`${PORT:8080}`)
+- [x] Profile-specific config support (`application-dev.yml`)
 - [ ] `ServiceRunner` interface with `NativeRunner` (os/exec)
 - [ ] Health check implementation (TCP + HTTP `/health` or `/actuator/health`)
 - [ ] Graceful shutdown with SIGINT/SIGTERM handling
 - [ ] Log capture (stdout/stderr) per service
 
 **Definition of Done:**
-- `orchestr discover .` prints detected service type, port, start command
-- Spring Boot project starts with `mvn spring-boot:run` or `./gradlew bootRun`
-- Vite project starts with `npm run dev` or `pnpm dev`
-- Service stops cleanly on Ctrl+C
-- Startup failures show error within 30s timeout
+- [x] `orchestr discover .` prints detected service type, port, start command
+- [ ] Spring Boot project starts with `mvn spring-boot:run` or `./gradlew bootRun`
+- [ ] Vite project starts with `npm run dev` or `pnpm dev`
+- [ ] Service stops cleanly on Ctrl+C
+- [ ] Startup failures show error within 30s timeout
 
 ---
 
@@ -245,6 +247,29 @@
 ## v1.1+ - Future Ideas (Backlog)
 
 **Not committed. Ideas for exploration.**
+
+### UI Testing (High Priority)
+
+Intent-based UI testing for frontend applications. See [UI Testing Spec](ui-testing.md).
+
+**Deliverables:**
+- [ ] `TYPE: UI` header support in Orchestrfile parser
+- [ ] Browser automation with Chromedp/Playwright
+- [ ] Common flow detection (Login, Signup, Search, Checkout)
+- [ ] Auto form field matching (by name, id, label, placeholder)
+- [ ] Page assertions (URL, text, element existence, count)
+- [ ] Visual regression with screenshot comparison
+
+**Example:**
+```
+TYPE: UI
+BASE: http://localhost:5173
+
+FLOW: Login
+DATA: {email: "test@test.com", password: "test123"}
+EXPECT: /dashboard
+EXPECT_TEXT: "Welcome"
+```
 
 ### Additional Detectors
 - [ ] Node.js/Express detector

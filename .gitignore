@@ -1,6 +1,6 @@
 # Binaries
-orchestr
-orchestr-*
+/orchestr
+/orchestr-*
 *.exe
 *.exe~
 *.dll

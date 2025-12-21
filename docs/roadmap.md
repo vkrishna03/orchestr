@@ -30,44 +30,47 @@
 
 ---
 
-### Week 2: Service Detection + Runner
+### Week 2: Service Detection + Runner ✓
 
 **Deliverables:**
 - [x] `ServiceDetector` interface
 - [x] Spring Boot detector (pom.xml, build.gradle, application.yml port extraction)
 - [x] React/Vite detector (vite.config.ts/js, port extraction)
 - [x] Environment placeholder parsing (`${PORT:8080}`)
-- [x] Profile-specific config support (`application-dev.yml`)
-- [ ] `ServiceRunner` interface with `NativeRunner` (os/exec)
-- [ ] Health check implementation (TCP + HTTP `/health` or `/actuator/health`)
-- [ ] Graceful shutdown with SIGINT/SIGTERM handling
-- [ ] Log capture (stdout/stderr) per service
+- [x] Profile-specific config support (`application-dev.yml`, `application-local.yml`)
+- [x] Auto-detect and use local/dev profile for Spring Boot
+- [x] `ServiceRunner` interface with `NativeRunner` (os/exec)
+- [x] Health check implementation (TCP + HTTP with exponential backoff)
+- [x] Graceful shutdown with SIGINT/SIGTERM handling
+- [x] Log capture (stdout/stderr) per service
 
 **Definition of Done:**
 - [x] `orchestr discover .` prints detected service type, port, start command
-- [ ] Spring Boot project starts with `mvn spring-boot:run` or `./gradlew bootRun`
-- [ ] Vite project starts with `npm run dev` or `pnpm dev`
-- [ ] Service stops cleanly on Ctrl+C
-- [ ] Startup failures show error within 30s timeout
+- [x] Spring Boot project starts with `mvn spring-boot:run -Dspring-boot.run.profiles=local`
+- [x] Vite project starts with `npm run dev` or `pnpm dev`
+- [x] Service stops cleanly on Ctrl+C
+- [x] Startup failures show error within 30s timeout
 
 ---
 
-### Week 3: Test Execution
+### Week 3: Test Execution ✓
 
 **Deliverables:**
-- [ ] HTTP client with configurable timeout
-- [ ] Request builder from `TestSpec`
-- [ ] Trace header injection (`X-Trace-ID`, `X-Request-ID`)
-- [ ] Response validator (status code + body pattern matching)
-- [ ] JSON path extraction for `SAVE` directive
-- [ ] Variable storage for test chaining
-- [ ] Sequential test runner
+- [x] HTTP client with configurable timeout
+- [x] Request builder from `TestSpec`
+- [x] Trace header injection (`X-Request-ID`)
+- [x] Response validator (status code + body pattern matching)
+- [x] JSON path extraction for `SAVE` directive
+- [x] Variable storage and substitution (`{{varName}}`)
+- [x] Sequential test runner
+- [x] CLI integration with pass/fail output and timing
 
 **Definition of Done:**
-- CRUD test flow works: POST (save id) → GET (use id) → PUT → DELETE
-- `EXPECT: 201 with {id: <uuid>}` validates correctly
-- `SAVE: token from body.data.accessToken` extracts nested values
-- Failed assertions show diff: `expected status 200, got 404`
+- [x] CRUD test flow works: POST (save id) → GET (use id) → PUT → DELETE
+- [x] `EXPECT: 201 with {id: <uuid>}` validates correctly
+- [x] `SAVE: token from body.data.accessToken` extracts nested values
+- [x] Failed assertions show diff: `expected status 200, got 404`
+- [x] End-to-end tested against real Spring Boot service (enteam-auth)
 
 ---
 
@@ -247,6 +250,23 @@
 ## v1.1+ - Future Ideas (Backlog)
 
 **Not committed. Ideas for exploration.**
+
+### Orchestrfile Auto-Generation (High Priority)
+
+Automatically generate test files from source code analysis.
+
+**Deliverables:**
+- [ ] Source code scanner for `@RestController`, `@RequestMapping`, etc.
+- [ ] Interactive CLI (`orchestr init`) with endpoint selection
+- [ ] Template-based generation for common patterns (auth, CRUD)
+- [ ] Support for Java/Kotlin Spring Boot, TypeScript/JavaScript
+
+**Limitations:** Can only generate CRUD skeletons - cannot infer:
+- External service calls (EXPECT_CALLS)
+- Complex business logic expectations
+- Domain-specific test data
+
+---
 
 ### UI Testing (High Priority)
 

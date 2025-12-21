@@ -31,10 +31,11 @@ orchestr/
 - [x] Project structure
 - [x] CLI skeleton (test, init, discover, version)
 - [x] CI/CD setup (GitHub Actions, GoReleaser)
-- [x] Orchestrfile parser (models, patterns, errors)
-- [ ] Service discovery
-- [ ] Test execution
-- [ ] Report generation
+- [x] Orchestrfile parser (225+ tests, patterns, constraints)
+- [x] Service discovery (Spring Boot, Vite)
+- [x] Service runner (health checks, graceful shutdown)
+- [x] Test executor (variables, patterns, SAVE directive)
+- [ ] Report generation (JSON, Markdown)
 
 ## Key Commands
 

@@ -1,0 +1,55 @@
+# Orchestrfile - Test specifications
+# Documentation: https://github.com/vkrishna03/orchestr
+
+# Health check
+ENTITY: System
+ENDPOINT: /health
+METHOD: GET
+EXPECT: 200 with {status: "ok"}
+
+---
+
+# User registration
+ENTITY: User
+ENDPOINT: /api/register
+METHOD: POST
+DATA: {email: "test@example.com", password: "test123", name: "Test User"}
+EXPECT: 201 with {id: <uuid>, email: "test@example.com"}
+
+---
+
+# User login
+ENTITY: User
+ENDPOINT: /api/login
+METHOD: POST
+DATA: {email: "test@example.com", password: "test123"}
+EXPECT: 200 with {token: <jwt>}
+SAVE: token from body.token
+
+---
+
+# Get current user (authenticated)
+ENTITY: User
+ENDPOINT: /api/me
+METHOD: GET
+AUTH: Bearer {{token}}
+EXPECT: 200 with {id: <uuid>, email: "test@example.com", name: "Test User"}
+
+---
+
+# Update user
+ENTITY: User
+ENDPOINT: /api/me
+METHOD: PUT
+AUTH: Bearer {{token}}
+DATA: {name: "Updated Name"}
+EXPECT: 200 with {name: "Updated Name"}
+
+---
+
+# Delete user
+ENTITY: User
+ENDPOINT: /api/me
+METHOD: DELETE
+AUTH: Bearer {{token}}
+EXPECT: 204

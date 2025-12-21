@@ -1,0 +1,38 @@
+# Binaries
+orchestr
+orchestr-*
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test
+*.test
+coverage.out
+coverage.html
+
+# Build
+/bin/
+/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+
+# Config (local overrides)
+.orchestr.local.yaml
+
+# Reports
+orchestr-report.md
+orchestr-report.json

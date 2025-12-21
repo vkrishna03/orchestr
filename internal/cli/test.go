@@ -8,13 +8,13 @@ import (
 	"os/signal"
 	"path/filepath"
 	"syscall"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vkrishna03/orchestr/internal/discovery"
 	"github.com/vkrishna03/orchestr/internal/executor"
 	"github.com/vkrishna03/orchestr/internal/parser"
+	"github.com/vkrishna03/orchestr/internal/reporter"
 	"github.com/vkrishna03/orchestr/internal/runner"
 )
 
@@ -150,62 +150,38 @@ func runTest(cmd *cobra.Command, args []string) error {
 	execOpts.BaseURL = baseURL
 	exec := executor.New(execOpts)
 
-	// Display test header
-	fmt.Printf("\nRunning %d test(s):\n\n", len(specs))
-
 	// Execute tests
 	results, summary, err := exec.Run(ctx, specs)
 	if err != nil {
 		return fmt.Errorf("run tests: %w", err)
 	}
 
-	// Display results
-	for i, result := range results {
-		entity := result.Spec.Entity
-		if entity == "" {
-			entity = "Test"
+	// Create reporter based on format
+	rep := reporter.New(reporter.ParseFormat(format))
+
+	// For markdown, write to file
+	if format == "markdown" || format == "md" {
+		reportPath := filepath.Join(path, "orchestr-report.md")
+		f, err := os.Create(reportPath)
+		if err != nil {
+			return fmt.Errorf("create report file: %w", err)
 		}
+		defer f.Close()
 
-		status := "✓"
-		if !result.Passed {
-			status = "✗"
+		if err := rep.Report(f, results, summary, svc); err != nil {
+			return fmt.Errorf("write report: %w", err)
 		}
+		fmt.Printf("Report written to: %s\n", reportPath)
 
-		fmt.Printf("  %s [%s] %s %s → %d (%s)\n",
-			status,
-			entity,
-			result.Spec.Method,
-			result.Spec.Endpoint,
-			result.Spec.Expect.Status,
-			formatDuration(result.Duration),
-		)
-
-		if !result.Passed && result.Error != "" {
-			fmt.Printf("    %s\n", result.Error)
-		}
-
-		// Debug logging
-		if verbose && !result.Passed {
-			slog.Debug("test failed",
-				"test", i+1,
-				"request", result.Request,
-				"response", result.Response,
-			)
+		// Also print summary to console
+		fmt.Printf("\n%d/%d passed (%d%%)\n", summary.Passed, summary.Total,
+			calculatePassRate(summary.Passed, summary.Total))
+	} else {
+		// Console or JSON - write to stdout
+		if err := rep.Report(os.Stdout, results, summary, svc); err != nil {
+			return fmt.Errorf("write report: %w", err)
 		}
 	}
-
-	// Display summary
-	fmt.Println()
-	passRate := 0
-	if summary.Total > 0 {
-		passRate = (summary.Passed * 100) / summary.Total
-	}
-	fmt.Printf("%d/%d passed (%d%%) in %s\n",
-		summary.Passed,
-		summary.Total,
-		passRate,
-		formatDuration(summary.Duration),
-	)
 
 	// Return error if any tests failed
 	if summary.Failed > 0 {
@@ -215,13 +191,9 @@ func runTest(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// formatDuration formats a duration for display.
-func formatDuration(d time.Duration) string {
-	if d < time.Millisecond {
-		return fmt.Sprintf("%dµs", d.Microseconds())
+func calculatePassRate(passed, total int) int {
+	if total == 0 {
+		return 0
 	}
-	if d < time.Second {
-		return fmt.Sprintf("%dms", d.Milliseconds())
-	}
-	return fmt.Sprintf("%.1fs", d.Seconds())
+	return (passed * 100) / total
 }

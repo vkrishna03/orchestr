@@ -52,23 +52,47 @@ func (d *SpringBootDetector) Analyze(dir string) (*models.Service, error) {
 		Config: make(map[string]string),
 	}
 
+	// Detect active profile (prefer local for development)
+	profile := d.detectProfile(dir)
+
 	// Determine build tool and commands
 	if _, err := os.Stat(filepath.Join(dir, "pom.xml")); err == nil {
 		svc.BuildTool = models.BuildMaven
-		svc.StartCmd = []string{"mvn", "spring-boot:run"}
+		if profile != "" {
+			svc.StartCmd = []string{"mvn", "spring-boot:run", fmt.Sprintf("-Dspring-boot.run.profiles=%s", profile)}
+		} else {
+			svc.StartCmd = []string{"mvn", "spring-boot:run"}
+		}
 		svc.BuildCmd = []string{"mvn", "package", "-DskipTests"}
 	} else if d.hasGradleWrapper(dir) {
 		svc.BuildTool = models.BuildGradle
-		svc.StartCmd = []string{"./gradlew", "bootRun"}
+		if profile != "" {
+			svc.StartCmd = []string{"./gradlew", "bootRun", fmt.Sprintf("--args=--spring.profiles.active=%s", profile)}
+		} else {
+			svc.StartCmd = []string{"./gradlew", "bootRun"}
+		}
 		svc.BuildCmd = []string{"./gradlew", "build", "-x", "test"}
 	} else if _, err := os.Stat(filepath.Join(dir, "build.gradle")); err == nil {
 		svc.BuildTool = models.BuildGradle
-		svc.StartCmd = []string{"gradle", "bootRun"}
+		if profile != "" {
+			svc.StartCmd = []string{"gradle", "bootRun", fmt.Sprintf("--args=--spring.profiles.active=%s", profile)}
+		} else {
+			svc.StartCmd = []string{"gradle", "bootRun"}
+		}
 		svc.BuildCmd = []string{"gradle", "build", "-x", "test"}
 	} else if _, err := os.Stat(filepath.Join(dir, "build.gradle.kts")); err == nil {
 		svc.BuildTool = models.BuildGradle
-		svc.StartCmd = []string{"gradle", "bootRun"}
+		if profile != "" {
+			svc.StartCmd = []string{"gradle", "bootRun", fmt.Sprintf("--args=--spring.profiles.active=%s", profile)}
+		} else {
+			svc.StartCmd = []string{"gradle", "bootRun"}
+		}
 		svc.BuildCmd = []string{"gradle", "build", "-x", "test"}
+	}
+
+	// Store detected profile in config
+	if profile != "" {
+		svc.Config["profile"] = profile
 	}
 
 	// Extract port from application config
@@ -81,6 +105,25 @@ func (d *SpringBootDetector) Analyze(dir string) (*models.Service, error) {
 	svc.HealthURL = fmt.Sprintf("http://localhost:%d/actuator/health", svc.Port)
 
 	return svc, nil
+}
+
+// detectProfile determines the best Spring profile to use.
+// Prefers "local" for local development, falls back to "dev".
+func (d *SpringBootDetector) detectProfile(dir string) string {
+	resourcesDir := filepath.Join(dir, "src", "main", "resources")
+
+	// Prefer local profile for local development
+	profiles := []string{"local", "dev"}
+	for _, profile := range profiles {
+		for _, ext := range []string{"properties", "yml", "yaml"} {
+			path := filepath.Join(resourcesDir, fmt.Sprintf("application-%s.%s", profile, ext))
+			if _, err := os.Stat(path); err == nil {
+				return profile
+			}
+		}
+	}
+
+	return ""
 }
 
 // isPomSpringBoot checks if pom.xml contains Spring Boot dependencies.

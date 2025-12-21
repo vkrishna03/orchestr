@@ -35,7 +35,7 @@ orchestr/
 - [x] Service discovery (Spring Boot, Vite)
 - [x] Service runner (health checks, graceful shutdown)
 - [x] Test executor (variables, patterns, SAVE directive)
-- [ ] Report generation (JSON, Markdown)
+- [x] Report generation (console, JSON, Markdown)
 
 ## Key Commands
 

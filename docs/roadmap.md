@@ -74,22 +74,22 @@
 
 ---
 
-### Week 4: Reporting + Release
+### Week 4: Reporting + Release ✓
 
 **Deliverables:**
-- [ ] Console reporter with colors (pass=green, fail=red)
-- [ ] Markdown report generator (`orchestr-report.md`)
-- [ ] JSON report generator (`--format json`)
-- [ ] Summary: X/Y passed, duration, failures list
+- [x] Console reporter with colors (pass=green, fail=red)
+- [x] Markdown report generator (`orchestr-report.md`)
+- [x] JSON report generator (`--format json`)
+- [x] Summary: X/Y passed, duration, failures list
 - [ ] Goreleaser setup for cross-platform binaries
 - [ ] GitHub Actions: test + lint + release workflow
 
 **Definition of Done:**
-- `orchestr test . --format markdown` writes report file
-- Report includes: service info, test results, failure details
-- CI produces binaries for linux/darwin/windows (amd64/arm64)
-- README has quick-start and usage examples
-- End-to-end: clone sample project → run `orchestr test .` → see report
+- [x] `orchestr test . --format markdown` writes report file
+- [x] Report includes: service info, test results, failure details
+- [ ] CI produces binaries for linux/darwin/windows (amd64/arm64)
+- [ ] README has quick-start and usage examples
+- [x] End-to-end: clone sample project → run `orchestr test .` → see report
 
 ---
 
@@ -343,9 +343,9 @@ EXPECT_TEXT: "Welcome"
 ## Milestone Checklist
 
 ### v0.1 Release Criteria
-- [ ] `orchestr test .` works on sample Spring Boot app
+- [x] `orchestr test .` works on sample Spring Boot app
 - [ ] `orchestr test .` works on sample Vite app
-- [ ] Markdown report generated
+- [x] Markdown report generated
 - [ ] Binaries for all platforms
 - [ ] README with examples
 - [ ] No known critical bugs

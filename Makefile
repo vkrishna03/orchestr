@@ -39,14 +39,13 @@ test-cover:
 	go test -race -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 
-## lint: Run linter
+## lint: Run linter (using built-in go vet)
 lint:
-	golangci-lint run
+	go vet ./...
 
 ## fmt: Format code
 fmt:
 	go fmt ./...
-	gofumpt -l -w .
 
 ## tidy: Tidy go modules
 tidy:

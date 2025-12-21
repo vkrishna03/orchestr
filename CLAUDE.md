@@ -31,7 +31,7 @@ orchestr/
 - [x] Project structure
 - [x] CLI skeleton (test, init, discover, version)
 - [x] CI/CD setup (GitHub Actions, GoReleaser)
-- [ ] Orchestrfile parser
+- [x] Orchestrfile parser (models, patterns, errors)
 - [ ] Service discovery
 - [ ] Test execution
 - [ ] Report generation

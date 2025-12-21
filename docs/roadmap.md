@@ -10,21 +10,23 @@
 
 **Scope:** One backend service, no orchestration, no external API mocking.
 
-### Week 1: CLI + Orchestrfile Parser
+### Week 1: CLI + Orchestrfile Parser ✓
 
 **Deliverables:**
-- [ ] Cobra CLI with `test`, `init`, `version` commands
-- [ ] Viper config loading (`.orchestr.yml`, env vars, flags)
-- [ ] Line-by-line Orchestrfile parser with state machine
-- [ ] Pattern matchers: `<uuid>`, `<jwt>`, `<int>`, `<string>`, `<email>`, `<iso8601>`
-- [ ] Variable substitution: `{{varName}}`
-- [ ] Parser error messages with line numbers
+- [x] Cobra CLI with `test`, `init`, `version` commands
+- [x] Viper config loading (`.orchestr.yml`, env vars, flags)
+- [x] Line-by-line Orchestrfile parser with state machine
+- [x] Pattern matchers: `<uuid>`, `<jwt>`, `<int>`, `<string>`, `<email>`, `<iso8601>`, `<url>`, `<any>`
+- [x] Extended patterns with constraints: `<array:min=1>`, `<int:gte=0>`, `<string:nonempty>`
+- [x] Structural types: `<array>`, `<object>` with constraint validation
+- [x] Variable substitution: `{{varName}}`
+- [x] Parser error messages with line numbers
 
 **Definition of Done:**
-- `orchestr init` generates a valid Orchestrfile template
-- `orchestr test .` parses Orchestrfile without errors
-- Parser unit tests cover all keywords and patterns
-- Invalid Orchestrfile shows clear error: `line 5: invalid METHOD 'GETT'`
+- [x] `orchestr init` generates a valid Orchestrfile template
+- [x] `orchestr test .` parses Orchestrfile without errors
+- [x] Parser unit tests cover all keywords and patterns (225+ tests)
+- [x] Invalid Orchestrfile shows clear error: `line 5: invalid METHOD 'GETT'`
 
 ---
 
@@ -317,7 +319,7 @@
 
 | Risk | Impact | Mitigation | Status |
 |------|--------|------------|--------|
-| Parser edge cases | Medium | Extensive test cases | Week 1 |
+| Parser edge cases | Medium | Extensive test cases (225+) | ✓ Done |
 | Service detection misses framework | High | Fallback to config | Week 2 |
 | Health check timing | Medium | Configurable timeout | Week 2 |
 | Dependency graph cycles | High | Cycle detection | Week 5 |

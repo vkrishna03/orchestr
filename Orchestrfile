@@ -1,0 +1,35 @@
+# Orchestrfile - Test specifications
+# See: https://github.com/vkrishna03/orchestr
+
+ENTITY: User
+ENDPOINT: /api/health
+METHOD: GET
+EXPECT: 200 with {status: "ok"}
+
+---
+
+# Example: User registration
+# ENTITY: User
+# ENDPOINT: /api/register
+# METHOD: POST
+# DATA: {email: "test@example.com", password: "test123"}
+# EXPECT: 201 with {id: <uuid>, email: "test@example.com"}
+
+---
+
+# Example: User login with variable save
+# ENTITY: User
+# ENDPOINT: /api/login
+# METHOD: POST
+# DATA: {email: "test@example.com", password: "test123"}
+# EXPECT: 200 with {token: <jwt>}
+# SAVE: token from body.token
+
+---
+
+# Example: Authenticated request
+# ENTITY: User
+# ENDPOINT: /api/me
+# METHOD: GET
+# AUTH: Bearer {{token}}
+# EXPECT: 200 with {email: "test@example.com"}

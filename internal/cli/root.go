@@ -1,8 +1,7 @@
 package cli
 
 import (
-	"fmt"
-	"os"
+	"log/slog"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -49,8 +48,6 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
-		if verbose {
-			fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-		}
+		slog.Debug("using config file", "path", viper.ConfigFileUsed())
 	}
 }

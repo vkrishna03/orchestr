@@ -147,14 +147,35 @@ EXPECT_CALLS: auth-service:/verify, payment-service:/charge, stripe:/v1/charges
 
 ### Built-in Type Patterns
 
-- `<string>` - Any non-empty string
+**Basic Types:**
+- `<uuid>` - Valid UUID format
+- `<jwt>` - Valid JWT token
 - `<int>` - Integer
 - `<float>` - Floating point number
-- `<bool>` - Boolean
+- `<bool>` - Boolean (true/false)
+- `<string>` - Any non-empty string
 - `<email>` - Valid email format
-- `<uuid>` - Valid UUID format
-- `<jwt>` - Valid JWT token format
+- `<url>` - Valid URL
 - `<iso8601>` - ISO 8601 datetime
+- `<any>` - Matches anything
+
+**Structural Types:**
+- `<array>` - Any array
+- `<object>` - Any object
+
+**With Constraints:**
+- `<array:min=1>` - Array with at least 1 element
+- `<array:max=10>` - Array with at most 10 elements
+- `<array:len=5>` - Array with exactly 5 elements
+- `<array:nonempty>` - Non-empty array
+- `<int:gte=0>` - Integer >= 0
+- `<int:gt=0,lt=100>` - Integer in range (0, 100)
+- `<float:gte=0.0>` - Float >= 0.0
+- `<string:nonempty>` - Non-empty string
+- `<string:min=3,max=50>` - String length between 3-50
+- `<object:nonempty>` - Non-empty object
+
+**Variable References:**
 - `{{var}}` - Variable substitution from saved values
 
 ### Keywords

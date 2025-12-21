@@ -36,3 +36,9 @@ vendor/
 # Reports
 orchestr-report.md
 orchestr-report.json
+
+# Web
+web/node_modules/
+web/dist/
+.playwright-mcp
+.playwright-mcp/

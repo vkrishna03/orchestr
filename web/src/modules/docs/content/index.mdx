@@ -1,0 +1,60 @@
+# Introduction
+
+Orchestr is a CLI tool that automatically validates AI-generated code through functional testing with zero configuration.
+
+## What it does
+
+Write an `Orchestrfile` spec, and Orchestr handles the rest:
+
+- **Detects** service type (Spring Boot, Vite, etc.)
+- **Starts** the service automatically
+- **Runs** functional tests
+- **Reports** pass/fail with details
+
+```bash
+$ orchestr test ./my-api
+
+Starting service... done
+Running 12 functional tests...
+8/12 passed, 2 critical failures
+
+Report: orchestr-report.md
+```
+
+## Why Orchestr?
+
+When building with AI coding assistants, you need fast feedback on whether the generated code actually works. Orchestr:
+
+1. **Zero config** - Detects your stack automatically
+2. **Real tests** - Not just type checking, but actual HTTP requests
+3. **Clear reports** - Know exactly what passed and failed
+4. **Simple DSL** - Write tests in a human-readable format
+
+## Quick Example
+
+```
+ENTITY: User
+ENDPOINT: /api/register
+METHOD: POST
+DATA: {email: "test@example.com", password: "secret123"}
+EXPECT: 201 with {id: <uuid>, email: "test@example.com"}
+```
+
+## Supported Frameworks
+
+**v0.1 (MVP):**
+- Spring Boot (pom.xml, build.gradle)
+- React/Vite (vite.config.ts/js)
+
+**v1.0 (Planned):**
+- Node.js/Express
+- Python Flask/FastAPI
+- Go Gin
+- Multi-service orchestration
+- External API mocking
+
+## Next Steps
+
+- [Installation](/docs/installation) - Get Orchestr running
+- [Quick Start](/docs/quickstart) - Your first test in 5 minutes
+- [Orchestrfile Guide](/docs/guide/orchestrfile) - Learn the DSL

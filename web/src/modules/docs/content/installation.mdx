@@ -1,0 +1,59 @@
+# Installation
+
+Get Orchestr up and running in minutes.
+
+## Download Binary
+
+### macOS (Apple Silicon)
+
+```bash
+curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_darwin_arm64.tar.gz | tar xz
+sudo mv orchestr /usr/local/bin/
+```
+
+### macOS (Intel)
+
+```bash
+curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_darwin_amd64.tar.gz | tar xz
+sudo mv orchestr /usr/local/bin/
+```
+
+### Linux
+
+```bash
+curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_linux_amd64.tar.gz | tar xz
+sudo mv orchestr /usr/local/bin/
+```
+
+### Windows
+
+Download from [GitHub Releases](https://github.com/vkrishna03/orchestr/releases/latest) and add to PATH.
+
+## Build from Source
+
+Requires Go 1.24+:
+
+```bash
+git clone https://github.com/vkrishna03/orchestr.git
+cd orchestr
+make build
+sudo mv orchestr /usr/local/bin/
+```
+
+## Verify Installation
+
+```bash
+orchestr version
+```
+
+You should see:
+
+```
+orchestr v0.1.0
+  commit: abc1234
+  built:  2024-12-21T00:00:00Z
+```
+
+## Next Steps
+
+- [Quick Start](/docs/quickstart) - Run your first test

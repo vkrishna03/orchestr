@@ -1,0 +1,82 @@
+# Quick Start
+
+Get your first test running in 5 minutes.
+
+## 1. Create an Orchestrfile
+
+In your project root, run:
+
+```bash
+orchestr init
+```
+
+This creates an `Orchestrfile` with a basic template.
+
+## 2. Edit the Orchestrfile
+
+Open `Orchestrfile` and define your tests:
+
+```
+# Health check
+ENTITY: System
+ENDPOINT: /health
+METHOD: GET
+EXPECT: 200 with {status: "ok"}
+
+---
+
+# User registration
+ENTITY: User
+ENDPOINT: /api/register
+METHOD: POST
+DATA: {email: "test@example.com", password: "secret123"}
+EXPECT: 201 with {id: <uuid>}
+```
+
+## 3. Run Tests
+
+```bash
+orchestr test .
+```
+
+Orchestr will:
+1. Detect your service type (Spring Boot, Vite, etc.)
+2. Start your service
+3. Wait for health check
+4. Run all tests
+5. Generate a report
+
+## Output
+
+```
+Discovering services...
+  Found: spring-boot (port 8080)
+
+Starting services...
+  ✓ spring-boot started (2.3s)
+
+Running tests...
+  ✓ System: GET /health (23ms)
+  ✓ User: POST /api/register (45ms)
+
+2/2 passed in 2.4s
+```
+
+## Common Options
+
+```bash
+# Verbose output
+orchestr test . -v
+
+# JSON report
+orchestr test . --format json
+
+# Markdown report
+orchestr test . --format markdown
+```
+
+## Next Steps
+
+- [Orchestrfile Guide](/docs/guide/orchestrfile) - Learn the full DSL
+- [Test Patterns](/docs/guide/patterns) - Common testing patterns
+- [CLI Reference](/docs/reference/cli) - All commands and flags

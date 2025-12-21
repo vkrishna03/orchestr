@@ -8,10 +8,12 @@ import (
 	"os/signal"
 	"path/filepath"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/vkrishna03/orchestr/internal/discovery"
+	"github.com/vkrishna03/orchestr/internal/executor"
 	"github.com/vkrishna03/orchestr/internal/parser"
 	"github.com/vkrishna03/orchestr/internal/runner"
 )
@@ -136,31 +138,90 @@ func runTest(cmd *cobra.Command, args []string) error {
 		}()
 	}
 
-	// Display test cases
+	// Determine base URL
+	port := 8080
+	if svc != nil && svc.Port > 0 {
+		port = svc.Port
+	}
+	baseURL := fmt.Sprintf("http://localhost:%d", port)
+
+	// Create executor
+	execOpts := executor.DefaultOptions()
+	execOpts.BaseURL = baseURL
+	exec := executor.New(execOpts)
+
+	// Display test header
 	fmt.Printf("\nRunning %d test(s):\n\n", len(specs))
-	for i, spec := range specs {
-		entity := spec.Entity
+
+	// Execute tests
+	results, summary, err := exec.Run(ctx, specs)
+	if err != nil {
+		return fmt.Errorf("run tests: %w", err)
+	}
+
+	// Display results
+	for i, result := range results {
+		entity := result.Spec.Entity
 		if entity == "" {
 			entity = "Test"
 		}
-		fmt.Printf("  %d. [%s] %s %s → %d\n",
-			i+1,
+
+		status := "✓"
+		if !result.Passed {
+			status = "✗"
+		}
+
+		fmt.Printf("  %s [%s] %s %s → %d (%s)\n",
+			status,
 			entity,
-			spec.Method,
-			spec.Endpoint,
-			spec.Expect.Status,
+			result.Spec.Method,
+			result.Spec.Endpoint,
+			result.Spec.Expect.Status,
+			formatDuration(result.Duration),
 		)
+
+		if !result.Passed && result.Error != "" {
+			fmt.Printf("    %s\n", result.Error)
+		}
+
+		// Debug logging
+		if verbose && !result.Passed {
+			slog.Debug("test failed",
+				"test", i+1,
+				"request", result.Request,
+				"response", result.Response,
+			)
+		}
 	}
 
-	// TODO: Implement test execution
-	// 1. Build HTTP requests from specs
-	// 2. Execute requests against svc.Port
-	// 3. Validate responses against expectations
-	// 4. Handle SAVE directives
-	// 5. Generate report
-
+	// Display summary
 	fmt.Println()
-	slog.Warn("test execution not yet implemented")
+	passRate := 0
+	if summary.Total > 0 {
+		passRate = (summary.Passed * 100) / summary.Total
+	}
+	fmt.Printf("%d/%d passed (%d%%) in %s\n",
+		summary.Passed,
+		summary.Total,
+		passRate,
+		formatDuration(summary.Duration),
+	)
+
+	// Return error if any tests failed
+	if summary.Failed > 0 {
+		return fmt.Errorf("%d test(s) failed", summary.Failed)
+	}
 
 	return nil
+}
+
+// formatDuration formats a duration for display.
+func formatDuration(d time.Duration) string {
+	if d < time.Millisecond {
+		return fmt.Sprintf("%dµs", d.Microseconds())
+	}
+	if d < time.Second {
+		return fmt.Sprintf("%dms", d.Milliseconds())
+	}
+	return fmt.Sprintf("%.1fs", d.Seconds())
 }

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: nested-app
+  profiles:
+    active: dev
+
+server:
+  port: ${PORT:8090}
+  servlet:
+    context-path: /api

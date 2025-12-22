@@ -56,13 +56,3 @@ release:
   prerelease: auto
   name_template: "v{{.Version}}"
 
-brews:
-  - repository:
-      owner: vkrishna03
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Formula
-    homepage: https://github.com/vkrishna03/orchestr
-    description: CLI tool for automated multi-service testing
-    license: MIT
-    skip_upload: auto

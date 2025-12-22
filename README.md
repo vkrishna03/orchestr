@@ -4,13 +4,7 @@ CLI tool that automatically validates AI-generated code through functional testi
 
 ## Installation
 
-### macOS (Homebrew)
-
-```bash
-brew install vkrishna03/tap/orchestr
-```
-
-### Manual Download
+### Download
 
 ```bash
 # macOS (Apple Silicon)

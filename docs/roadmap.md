@@ -1,108 +1,69 @@
 # Orchestr Development Roadmap
 
-> Clear milestones with specific deliverables. No vague goals.
+> Clear milestones with specific deliverables.
 
 ---
 
-## v0.1 - Single Service MVP
+## v0.1 - Single Service MVP ✓
 
 **Goal:** Test a single Spring Boot or React/Vite service with zero configuration.
 
-**Scope:** One backend service, no orchestration, no external API mocking.
+**Status:** Released
 
-### Week 1: CLI + Orchestrfile Parser ✓
-
-**Deliverables:**
-- [x] Cobra CLI with `test`, `init`, `version` commands
-- [x] Viper config loading (`.orchestr.yml`, env vars, flags)
-- [x] Line-by-line Orchestrfile parser with state machine
-- [x] Pattern matchers: `<uuid>`, `<jwt>`, `<int>`, `<string>`, `<email>`, `<iso8601>`, `<url>`, `<any>`
-- [x] Extended patterns with constraints: `<array:min=1>`, `<int:gte=0>`, `<string:nonempty>`
-- [x] Structural types: `<array>`, `<object>` with constraint validation
-- [x] Variable substitution: `{{varName}}`
-- [x] Parser error messages with line numbers
-
-**Definition of Done:**
-- [x] `orchestr init` generates a valid Orchestrfile template
-- [x] `orchestr test .` parses Orchestrfile without errors
-- [x] Parser unit tests cover all keywords and patterns (225+ tests)
-- [x] Invalid Orchestrfile shows clear error: `line 5: invalid METHOD 'GETT'`
+- [x] Cobra CLI with `test`, `init`, `discover`, `version` commands
+- [x] Orchestrfile parser with pattern matchers (`<uuid>`, `<jwt>`, `<int>`, etc.)
+- [x] Extended patterns with constraints (`<array:min=1>`, `<int:gte=0>`)
+- [x] Variable substitution (`{{varName}}`) and SAVE directive
+- [x] Spring Boot detector (Maven/Gradle, profile detection)
+- [x] Vite/React detector
+- [x] Service runner with health checks
+- [x] HTTP test executor with response validation
+- [x] Reporters: console (colored), JSON, Markdown
+- [x] Cross-platform binaries (linux/darwin/windows)
 
 ---
 
-### Week 2: Service Detection + Runner ✓
+## v0.2 - Orchestrfile Generation + Polish
+
+**Goal:** Make it easy to get started with Orchestrfile generation from source code.
+
+### Orchestrfile Auto-Generation
 
 **Deliverables:**
-- [x] `ServiceDetector` interface
-- [x] Spring Boot detector (pom.xml, build.gradle, application.yml port extraction)
-- [x] React/Vite detector (vite.config.ts/js, port extraction)
-- [x] Environment placeholder parsing (`${PORT:8080}`)
-- [x] Profile-specific config support (`application-dev.yml`, `application-local.yml`)
-- [x] Auto-detect and use local/dev profile for Spring Boot
-- [x] `ServiceRunner` interface with `NativeRunner` (os/exec)
-- [x] Health check implementation (TCP + HTTP with exponential backoff)
-- [x] Graceful shutdown with SIGINT/SIGTERM handling
-- [x] Log capture (stdout/stderr) per service
+- [ ] `orchestr init --scan` - Scan source code for endpoints
+- [ ] Java/Kotlin: Parse `@RestController`, `@RequestMapping`, `@GetMapping`, etc.
+- [ ] TypeScript: Parse Express routes, Next.js API routes
+- [ ] Interactive CLI: Select which endpoints to include
+- [ ] Generate skeleton Orchestrfile with placeholder expects
+- [ ] Template-based generation for common patterns (health, auth, CRUD)
 
 **Definition of Done:**
-- [x] `orchestr discover .` prints detected service type, port, start command
-- [x] Spring Boot project starts with `mvn spring-boot:run -Dspring-boot.run.profiles=local`
-- [x] Vite project starts with `npm run dev` or `pnpm dev`
-- [x] Service stops cleanly on Ctrl+C
-- [x] Startup failures show error within 30s timeout
+- `orchestr init --scan` detects endpoints from Spring Boot controller
+- User selects endpoints interactively
+- Generated Orchestrfile has correct METHOD, ENDPOINT, placeholder DATA/EXPECT
+- Works for basic CRUD operations
 
----
-
-### Week 3: Test Execution ✓
+### Quality of Life Improvements
 
 **Deliverables:**
-- [x] HTTP client with configurable timeout
-- [x] Request builder from `TestSpec`
-- [x] Trace header injection (`X-Request-ID`)
-- [x] Response validator (status code + body pattern matching)
-- [x] JSON path extraction for `SAVE` directive
-- [x] Variable storage and substitution (`{{varName}}`)
-- [x] Sequential test runner
-- [x] CLI integration with pass/fail output and timing
+- [ ] Better error messages with suggestions
+- [ ] `--watch` mode for continuous testing
+- [ ] Config file support (`.orchestr.yml`) for base URL, timeout, etc.
+- [ ] Verbose mode improvements (`-v`, `-vv`)
+- [ ] Dry-run mode (`--dry-run`) to validate without executing
 
-**Definition of Done:**
-- [x] CRUD test flow works: POST (save id) → GET (use id) → PUT → DELETE
-- [x] `EXPECT: 201 with {id: <uuid>}` validates correctly
-- [x] `SAVE: token from body.data.accessToken` extracts nested values
-- [x] Failed assertions show diff: `expected status 200, got 404`
-- [x] End-to-end tested against real Spring Boot service (enteam-auth)
+### Additional Detectors
 
----
+- [ ] Node.js/Express detector
+- [ ] Python Flask/FastAPI detector
+- [ ] Go Gin detector
 
-### Week 4: Reporting + Release ✓
+### v0.2 Release Criteria
 
-**Deliverables:**
-- [x] Console reporter with colors (pass=green, fail=red)
-- [x] Markdown report generator (`orchestr-report.md`)
-- [x] JSON report generator (`--format json`)
-- [x] Summary: X/Y passed, duration, failures list
-- [x] Goreleaser setup for cross-platform binaries
-- [x] GitHub Actions: test + lint + release workflow
-
-**Definition of Done:**
-- [x] `orchestr test . --format markdown` writes report file
-- [x] Report includes: service info, test results, failure details
-- [x] CI produces binaries for linux/darwin/windows (amd64/arm64)
-- [x] README has quick-start and usage examples
-- [x] End-to-end: clone sample project → run `orchestr test .` → see report
-
----
-
-### v0.1 Out of Scope
-
-- Multi-service orchestration
-- External API mocking
-- Distributed tracing across services
-- Docker runner
-- Node.js/Python/Go detectors
-- TUI (terminal UI dashboard)
-- Performance/load testing
-- Code quality analysis
+- [ ] `orchestr init --scan` generates Orchestrfile from Spring Boot project
+- [ ] At least one additional framework detector (Node.js or Python)
+- [ ] Watch mode works
+- [ ] Config file support
 
 ---
 
@@ -110,140 +71,52 @@
 
 **Goal:** Orchestrate multiple services with dependency management and auto-mocking.
 
-**Dependencies:** v0.1 complete (single service works).
+### Multi-Service Discovery
 
-### Week 5: Multi-Service Discovery
-
-**Deliverables:**
 - [ ] Recursive directory scanner
-- [ ] Maven multi-module detection (`<modules>` in parent pom.xml)
+- [ ] Maven multi-module detection
 - [ ] Gradle multi-project detection
-- [ ] Build dependency graph from:
-  - Maven `dependency:tree`
-  - Gradle `dependencies`
-  - Fallback: code parsing for RestTemplate/WebClient URLs
+- [ ] Build dependency graph
 - [ ] Topological sort for start order
 
-**Definition of Done:**
-- `orchestr discover ./microservices` lists all services with dependencies
-- Output shows: `auth-service → (none), payment-service → auth-service`
-- Circular dependencies detected and reported as error
+### Service Orchestration
 
-**Blocked by:** Week 2 service detection
-
----
-
-### Week 6: Service Orchestration
-
-**Deliverables:**
 - [ ] Parallel service startup within dependency levels
-- [ ] Dynamic port allocation (avoid conflicts)
-- [ ] Health check coordination (wait for dependencies)
-- [ ] Service registry (name → host:port mapping)
-- [ ] Environment variable injection for service URLs
-- [ ] Graceful shutdown in reverse dependency order
+- [ ] Dynamic port allocation
+- [ ] Health check coordination
+- [ ] Service registry (name → host:port)
+- [ ] Environment variable injection
+- [ ] Graceful shutdown in reverse order
 
-**Definition of Done:**
-- 4 services start in correct order with proper health checks
-- Services can communicate via injected URLs
-- One service failure stops dependent services
-- Clean shutdown kills all services
+### External API Mocking
 
-**Blocked by:** Week 5 discovery
-
----
-
-### Week 7: External API Detection
-
-**Deliverables:**
-- [ ] Code parser for HTTP calls to external domains
-  - Java: RestTemplate, WebClient, Feign, OkHttp
-  - JavaScript: fetch, axios
-- [ ] External API registry (stripe.com, sendgrid.com, etc.)
-- [ ] Config-based external API declaration (`.orchestr.yml`)
-- [ ] Classify: internal service vs external API
-
-**Definition of Done:**
-- Detects `restTemplate.post("https://api.stripe.com/v1/charges")`
-- Lists found external APIs: `stripe.com`, `sendgrid.com`
-- User can override with config: `externals: [stripe, twilio]`
-
-**Blocked by:** None (can run parallel to Week 6)
-
----
-
-### Week 8: Mock Server + Templates
-
-**Deliverables:**
-- [ ] Mock HTTP server (net/http)
-- [ ] Route matcher with path params (`/v1/customers/:id`)
-- [ ] Response templating (`{{uuid}}`, `{{.amount}}`)
-- [ ] Built-in templates: Stripe, SendGrid, Twilio
-- [ ] Call recording for validation
+- [ ] Detect HTTP calls to external domains (Stripe, SendGrid, etc.)
+- [ ] Mock HTTP server with route matching
+- [ ] Response templating
+- [ ] Built-in templates: Stripe, SendGrid, Twilio, AWS SQS
+- [ ] Call recording for `EXPECT_CALLS` validation
 - [ ] URL injection via environment variables
 
-**Definition of Done:**
-- Mock Stripe server responds to `/v1/charges` with valid JSON
-- Service configured with `STRIPE_API_URL=http://localhost:9001`
-- `EXPECT_CALLS: stripe:/v1/charges` validates mock was called
-- Custom mock config in `.orchestr.yml`
+### Distributed Tracing
 
-**Blocked by:** Week 7 detection
-
----
-
-### Week 9: Distributed Tracing
-
-**Deliverables:**
-- [ ] Trace ID propagation through request chain
-- [ ] Span collection from mock servers
-- [ ] Timeline builder (ordered by timestamp)
+- [ ] Trace ID propagation
+- [ ] Span collection from services and mocks
+- [ ] Timeline builder
 - [ ] Cross-service error correlation
 - [ ] Trace visualization in report
 
-**Definition of Done:**
-- Single request shows full call chain across 4 services
-- Timeline format: `[12ms] auth-service: GET /verify → 200 (5ms)`
-- Failed service shows in red with error message
-- Report includes trace for each test
+### Failure Analysis
 
-**Blocked by:** Week 8 mock servers
+- [ ] Root cause identification
+- [ ] Error extraction from logs
+- [ ] Fix suggestions
 
----
+### v1.0 Release Criteria
 
-### Week 10: Failure Analysis + Polish
-
-**Deliverables:**
-- [ ] Root cause identification (which service failed first)
-- [ ] Error extraction from service logs
-- [ ] Fix suggestions (missing env var, wrong config)
-- [ ] Performance optimization (parallel where possible)
-- [ ] Extended test suite
-- [ ] Documentation update
-
-**Definition of Done:**
-- Failure report: "payment-service crashed at PaymentController.java:45"
-- Suggestion: "Missing STRIPE_API_KEY environment variable"
-- Full E2E test with 4+ services passes
-- README updated with multi-service examples
-
-**Blocked by:** Week 9 tracing
-
----
-
-### v1.0 Feature Summary
-
-| Feature | Status |
-|---------|--------|
-| Multi-service discovery | Week 5 |
-| Dependency graph | Week 5 |
-| Parallel startup | Week 6 |
-| Port allocation | Week 6 |
-| External API detection | Week 7 |
-| Auto-mock servers | Week 8 |
-| Built-in mock templates | Week 8 |
-| Distributed tracing | Week 9 |
-| Failure isolation | Week 10 |
+- [ ] 4-service sample project works
+- [ ] Auto-mocking for Stripe/SendGrid
+- [ ] Distributed trace in report
+- [ ] Root cause shown for failures
 
 ---
 
@@ -251,36 +124,10 @@
 
 **Not committed. Ideas for exploration.**
 
-### Orchestrfile Auto-Generation (High Priority)
+### UI Testing
 
-Automatically generate test files from source code analysis.
+Intent-based UI testing for frontend applications.
 
-**Deliverables:**
-- [ ] Source code scanner for `@RestController`, `@RequestMapping`, etc.
-- [ ] Interactive CLI (`orchestr init`) with endpoint selection
-- [ ] Template-based generation for common patterns (auth, CRUD)
-- [ ] Support for Java/Kotlin Spring Boot, TypeScript/JavaScript
-
-**Limitations:** Can only generate CRUD skeletons - cannot infer:
-- External service calls (EXPECT_CALLS)
-- Complex business logic expectations
-- Domain-specific test data
-
----
-
-### UI Testing (High Priority)
-
-Intent-based UI testing for frontend applications. See [UI Testing Spec](ui-testing.md).
-
-**Deliverables:**
-- [ ] `TYPE: UI` header support in Orchestrfile parser
-- [ ] Browser automation with Chromedp/Playwright
-- [ ] Common flow detection (Login, Signup, Search, Checkout)
-- [ ] Auto form field matching (by name, id, label, placeholder)
-- [ ] Page assertions (URL, text, element existence, count)
-- [ ] Visual regression with screenshot comparison
-
-**Example:**
 ```
 TYPE: UI
 BASE: http://localhost:5173
@@ -291,82 +138,48 @@ EXPECT: /dashboard
 EXPECT_TEXT: "Welcome"
 ```
 
-### Additional Detectors
-- [ ] Node.js/Express detector
-- [ ] Python Flask/FastAPI detector
-- [ ] Go Gin detector
-- [ ] .NET Core detector
+- Browser automation (Playwright/Chromedp)
+- Common flow detection (Login, Signup, Checkout)
+- Auto form field matching
+- Visual regression
 
 ### Docker Integration
-- [ ] `DockerRunner` implementation
-- [ ] Auto-detect Dockerfile presence
-- [ ] Docker Compose compatibility
-- [ ] Network isolation
+
+- `DockerRunner` implementation
+- Docker Compose compatibility
+- Network isolation
 
 ### Interactive TUI
-- [ ] Bubble Tea dashboard
-- [ ] Live service status
-- [ ] Real-time log streaming
-- [ ] Interactive test selection
+
+- Bubble Tea dashboard
+- Live service status
+- Real-time log streaming
 
 ### Performance Testing
-- [ ] Load testing (concurrent requests)
-- [ ] Response time measurement
-- [ ] Throughput calculation
-- [ ] Breaking point detection
 
-### Code Quality
-- [ ] Duplicate code detection
-- [ ] Error handling patterns
-- [ ] AI-specific issue detection (hallucinated imports)
-- [ ] Architectural pattern analysis
+- Load testing (concurrent requests)
+- Response time measurement
+- Breaking point detection
 
 ### CI/CD Integration
-- [ ] GitHub Actions output format
-- [ ] GitLab CI integration
-- [ ] Jenkins plugin
-- [ ] PR comment reports
 
-### Security Testing
-- [ ] Common vulnerability checks
-- [ ] Secrets detection
-- [ ] Injection testing (SQL, XSS)
+- GitHub Actions output format
+- PR comment reports
+- GitLab CI integration
 
 ### Advanced Mocking
-- [ ] OpenAPI spec import for mocks
-- [ ] Record/replay mode
-- [ ] Chaos engineering (random failures)
-- [ ] Latency injection
+
+- OpenAPI spec import
+- Record/replay mode
+- Chaos engineering
 
 ---
 
-## Milestone Checklist
+## Version Summary
 
-### v0.1 Release Criteria
-- [x] `orchestr test .` works on sample Spring Boot app
-- [x] `orchestr test .` works on sample Vite app
-- [x] Markdown report generated
-- [x] Binaries for all platforms (via Goreleaser)
-- [x] README with examples
-- [x] No known critical bugs
-
-### v1.0 Release Criteria
-- [ ] All v0.1 criteria
-- [ ] 4-service sample project works
-- [ ] Auto-mocking for Stripe/SendGrid
-- [ ] Distributed trace in report
-- [ ] Root cause shown for failures
-- [ ] 10+ beta users tested
-
----
-
-## Risk Tracking
-
-| Risk | Impact | Mitigation | Status |
-|------|--------|------------|--------|
-| Parser edge cases | Medium | Extensive test cases (225+) | ✓ Done |
-| Service detection misses framework | High | Fallback to config | Week 2 |
-| Health check timing | Medium | Configurable timeout | Week 2 |
-| Dependency graph cycles | High | Cycle detection | Week 5 |
-| Mock response mismatch | Medium | Allow custom config | Week 8 |
-| Trace correlation failure | Medium | Log-based fallback | Week 9 |
+| Version | Focus | Status |
+|---------|-------|--------|
+| v0.1 | Single service testing | ✓ Released |
+| v0.2 | Orchestrfile generation, polish | Next |
+| v1.0 | Multi-service, mocking, tracing | Planned |
+| v1.1+ | UI testing, Docker, TUI | Backlog |

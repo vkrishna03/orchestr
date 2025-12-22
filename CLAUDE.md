@@ -66,7 +66,10 @@ See `docs/dev-guide.md` for full details.
 
 See `docs/roadmap.md` for detailed milestones.
 
-## Notes
+## Versions
 
-- v0.1: Single service testing (Spring Boot, Vite)
-- v1.0: Multi-service orchestration with auto-mocking
+| Version | Focus | Status |
+|---------|-------|--------|
+| v0.1 | Single service testing | ✓ Released |
+| v0.2 | Orchestrfile generation, polish | Next |
+| v1.0 | Multi-service, mocking, tracing | Planned |

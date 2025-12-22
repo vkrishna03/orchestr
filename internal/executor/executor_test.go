@@ -411,7 +411,7 @@ func TestExecutor_Run(t *testing.T) {
 		case "/api/users":
 			if r.Method == "POST" {
 				w.WriteHeader(http.StatusCreated)
-				json.NewEncoder(w).Encode(map[string]any{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"id":    "user-123",
 					"email": "test@test.com",
 				})
@@ -420,7 +420,7 @@ func TestExecutor_Run(t *testing.T) {
 		case "/api/users/user-123":
 			if r.Method == "GET" {
 				w.WriteHeader(http.StatusOK)
-				json.NewEncoder(w).Encode(map[string]any{
+				_ = json.NewEncoder(w).Encode(map[string]any{
 					"id":    "user-123",
 					"email": "test@test.com",
 				})
@@ -503,7 +503,7 @@ func TestExecutor_Run(t *testing.T) {
 func TestExecutor_Run_Failure(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]any{
+		_ = json.NewEncoder(w).Encode(map[string]any{
 			"error": "unauthorized",
 		})
 	}))

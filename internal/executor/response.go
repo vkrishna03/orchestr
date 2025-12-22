@@ -59,7 +59,7 @@ func (v *ResponseValidator) Validate(resp *http.Response, body []byte, expect mo
 	}
 
 	// Check body pattern if specified
-	if expect.Pattern != nil && len(expect.Pattern) > 0 {
+	if len(expect.Pattern) > 0 {
 		if err := v.validateBody(body, expect.Pattern); err != nil {
 			return err
 		}

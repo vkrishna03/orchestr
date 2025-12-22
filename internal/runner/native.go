@@ -77,7 +77,7 @@ func (r *NativeRunner) Start(ctx context.Context, svc *models.Service) error {
 
 	// Monitor process in background
 	go func() {
-		r.cmd.Wait()
+		_ = r.cmd.Wait()
 		close(r.done)
 	}()
 
@@ -100,7 +100,7 @@ func (r *NativeRunner) Start(ctx context.Context, svc *models.Service) error {
 
 		r.status = StatusFailed
 		// Try to stop the failed process
-		r.stopProcess(context.Background())
+		_ = r.stopProcess(context.Background())
 		return fmt.Errorf("health check failed: %w", err)
 	}
 
@@ -134,9 +134,9 @@ func (r *NativeRunner) stopProcess(ctx context.Context) error {
 	// Send SIGINT to process group
 	pgid, err := syscall.Getpgid(r.cmd.Process.Pid)
 	if err == nil {
-		syscall.Kill(-pgid, syscall.SIGINT)
+		_ = syscall.Kill(-pgid, syscall.SIGINT)
 	} else {
-		r.cmd.Process.Signal(syscall.SIGINT)
+		_ = r.cmd.Process.Signal(syscall.SIGINT)
 	}
 
 	// Wait for graceful shutdown
@@ -147,16 +147,16 @@ func (r *NativeRunner) stopProcess(ctx context.Context) error {
 	case <-time.After(r.opts.StopTimeout):
 		// Force kill
 		if pgid, err := syscall.Getpgid(r.cmd.Process.Pid); err == nil {
-			syscall.Kill(-pgid, syscall.SIGKILL)
+			_ = syscall.Kill(-pgid, syscall.SIGKILL)
 		} else {
-			r.cmd.Process.Kill()
+			_ = r.cmd.Process.Kill()
 		}
 		<-r.done
 		r.status = StatusStopped
 		return nil
 	case <-ctx.Done():
 		// Force kill on context cancel
-		r.cmd.Process.Kill()
+		_ = r.cmd.Process.Kill()
 		r.status = StatusStopped
 		return ctx.Err()
 	}

@@ -227,7 +227,7 @@ func TestNativeRunner_Logs(t *testing.T) {
 	defer cancel()
 
 	_ = runner.Start(ctx, svc)
-	runner.Stop(context.Background())
+	_ = runner.Stop(context.Background())
 
 	logs := runner.Logs()
 	if logs == "" {

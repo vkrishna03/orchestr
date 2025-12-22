@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/vkrishna03/orchestr/internal/models"
@@ -64,10 +63,8 @@ func (r *NativeRunner) Start(ctx context.Context, svc *models.Service) error {
 		r.cmd.Stderr = r.logs
 	}
 
-	// Set process group for clean shutdown
-	r.cmd.SysProcAttr = &syscall.SysProcAttr{
-		Setpgid: true,
-	}
+	// Set process group for clean shutdown (platform-specific)
+	setProcGroup(r.cmd)
 
 	// Start process
 	if err := r.cmd.Start(); err != nil {
@@ -131,13 +128,8 @@ func (r *NativeRunner) stopProcess(ctx context.Context) error {
 	default:
 	}
 
-	// Send SIGINT to process group
-	pgid, err := syscall.Getpgid(r.cmd.Process.Pid)
-	if err == nil {
-		_ = syscall.Kill(-pgid, syscall.SIGINT)
-	} else {
-		_ = r.cmd.Process.Signal(syscall.SIGINT)
-	}
+	// Send interrupt signal (platform-specific)
+	_ = interruptProcess(r.cmd)
 
 	// Wait for graceful shutdown
 	select {
@@ -145,12 +137,8 @@ func (r *NativeRunner) stopProcess(ctx context.Context) error {
 		r.status = StatusStopped
 		return nil
 	case <-time.After(r.opts.StopTimeout):
-		// Force kill
-		if pgid, err := syscall.Getpgid(r.cmd.Process.Pid); err == nil {
-			_ = syscall.Kill(-pgid, syscall.SIGKILL)
-		} else {
-			_ = r.cmd.Process.Kill()
-		}
+		// Force kill (platform-specific)
+		_ = forceKillProcess(r.cmd)
 		<-r.done
 		r.status = StatusStopped
 		return nil

@@ -81,14 +81,14 @@
 - [x] Markdown report generator (`orchestr-report.md`)
 - [x] JSON report generator (`--format json`)
 - [x] Summary: X/Y passed, duration, failures list
-- [ ] Goreleaser setup for cross-platform binaries
-- [ ] GitHub Actions: test + lint + release workflow
+- [x] Goreleaser setup for cross-platform binaries
+- [x] GitHub Actions: test + lint + release workflow
 
 **Definition of Done:**
 - [x] `orchestr test . --format markdown` writes report file
 - [x] Report includes: service info, test results, failure details
-- [ ] CI produces binaries for linux/darwin/windows (amd64/arm64)
-- [ ] README has quick-start and usage examples
+- [x] CI produces binaries for linux/darwin/windows (amd64/arm64)
+- [x] README has quick-start and usage examples
 - [x] End-to-end: clone sample project → run `orchestr test .` → see report
 
 ---
@@ -344,11 +344,11 @@ EXPECT_TEXT: "Welcome"
 
 ### v0.1 Release Criteria
 - [x] `orchestr test .` works on sample Spring Boot app
-- [ ] `orchestr test .` works on sample Vite app
+- [x] `orchestr test .` works on sample Vite app
 - [x] Markdown report generated
-- [ ] Binaries for all platforms
-- [ ] README with examples
-- [ ] No known critical bugs
+- [x] Binaries for all platforms (via Goreleaser)
+- [x] README with examples
+- [x] No known critical bugs
 
 ### v1.0 Release Criteria
 - [ ] All v0.1 criteria

@@ -61,7 +61,7 @@ brews:
       owner: vkrishna03
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    folder: Formula
+    directory: Formula
     homepage: https://github.com/vkrishna03/orchestr
     description: CLI tool for automated multi-service testing
     license: MIT

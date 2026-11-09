@@ -8,17 +8,19 @@ CLI tool that automatically validates AI-generated code through functional testi
 
 ```bash
 # macOS (Apple Silicon)
-curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_Darwin_arm64.tar.gz | tar xz
+curl -L https://github.com/vkrishna03/orchestr/releases/download/v0.1.0/orchestr_0.1.0_darwin_arm64.tar.gz | tar xz
 sudo mv orchestr /usr/local/bin/
 
 # macOS (Intel)
-curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_Darwin_amd64.tar.gz | tar xz
+curl -L https://github.com/vkrishna03/orchestr/releases/download/v0.1.0/orchestr_0.1.0_darwin_amd64.tar.gz | tar xz
 sudo mv orchestr /usr/local/bin/
 
 # Linux (amd64)
-curl -L https://github.com/vkrishna03/orchestr/releases/latest/download/orchestr_Linux_amd64.tar.gz | tar xz
+curl -L https://github.com/vkrishna03/orchestr/releases/download/v0.1.0/orchestr_0.1.0_linux_amd64.tar.gz | tar xz
 sudo mv orchestr /usr/local/bin/
 ```
+
+Linux arm64 and Windows builds are on the [v0.1.0 release page](https://github.com/vkrishna03/orchestr/releases/tag/v0.1.0).
 
 ### From Source
 
